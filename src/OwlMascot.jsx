@@ -2,7 +2,7 @@
 export default function OwlMascot({ className = '' }) {
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox="0 0 200 200" 
       role="img"
       aria-label="SyllaBuddy's friendly studying owl"
       className={className}

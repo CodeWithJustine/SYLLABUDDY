@@ -1,16 +1,32 @@
-# React + Vite
+# SyllaBuddy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SyllaBuddy is a React + Vite student task planner with Supabase authentication,
+cloud-synced tasks, opt-in deadline reminders, and an interactive Study Hub.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Install Node.js 20.19+ or 22.12+.
+2. Create a Supabase project and follow [Supabase setup](./SUPABASE_SETUP.md).
+3. Copy `.env.example` to `.env.local` and set the project URL and public
+   publishable/anon key. Do not put a service-role key in a `VITE_` variable.
+4. Install dependencies and run the app:
 
-## React Compiler
+   ```sh
+   npm install
+   npm run dev
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The app displays a setup message until its Supabase URL and public key are set.
+The SQL migration, scheduled Edge Function, and push-notification service worker
+must also be deployed before cloud sync or deadline reminders can work.
 
-## Expanding the ESLint configuration
+## Checks
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```sh
+npm run lint
+npm run build
+```
+
+See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for migrations, authentication
+settings, scheduled reminder deployment, local-task import, and a manual test
+checklist.

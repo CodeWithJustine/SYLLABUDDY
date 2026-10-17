@@ -1,9 +1,7 @@
-export default function OwlMascot({ size = 120, className = '' }) {
+export default function OwlMascot({ className = '' }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
       viewBox="0 0 160 160"
       role="img"
       aria-label="SyllaBuddy's friendly study owl mascot"

@@ -1,22 +1,23 @@
-function formatDate(dateString) {
-  if (!dateString) return 'No due date'
-
-  // Parse date-only strings as local dates to avoid
-  // displaying the previous day in some time zones.
-  const [year, month, day] = dateString.split('-').map(Number)
-  const date = new Date(year, month - 1, day)
-
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+function formatDate(dateString, timezone) {
+  return dateString
+    ? new Date(dateString).toLocaleString(undefined, {
+        timeZone: timezone,
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : 'No due date'
 }
 
 export default function TaskCard({
   task,
+  onOpen,
   onStatusChange,
   onDelete,
+  onError,
+  timezone,
 }) {
   const isActive = task.status === 'active'
   const isCompleted = task.status === 'completed'
@@ -41,13 +42,19 @@ export default function TaskCard({
             {task.subject}
           </span>
 
-          <h4 className="break-words text-lg font-bold text-slate-900">
+          <h4 className="break-words text-lg font-bold text-slate-900 dark:text-white">
+            <button
+              type="button"
+              onClick={() => onOpen(task)}
+              className="rounded text-left hover:text-blue-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 dark:hover:text-blue-300"
+            >
             {task.name}
+            </button>
           </h4>
 
-          <p className="mt-3 flex items-center gap-2 text-sm text-slate-500">
+          <p className="mt-3 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <span aria-hidden="true">▦</span>
-            Due {formatDate(task.dueDate)}
+            Due {formatDate(task.due_at, timezone)}
           </p>
         </div>
 
@@ -63,7 +70,13 @@ export default function TaskCard({
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
-              onClick={() => onStatusChange(task.id, 'completed')}
+              onClick={async () => {
+                try {
+                  await onStatusChange(task.id, 'completed', task.updated_at)
+                } catch (error) {
+                  onError(error.message)
+                }
+              }}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-100"
             >
               <span aria-hidden="true">✓</span>
@@ -72,7 +85,13 @@ export default function TaskCard({
 
             <button
               type="button"
-              onClick={() => onStatusChange(task.id, 'missed')}
+              onClick={async () => {
+                try {
+                  await onStatusChange(task.id, 'missed', task.updated_at)
+                } catch (error) {
+                  onError(error.message)
+                }
+              }}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-100"
             >
               <span aria-hidden="true">!</span>
@@ -89,12 +108,18 @@ export default function TaskCard({
 
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 const confirmed = window.confirm(
                   `Permanently delete "${task.name}"? This cannot be undone.`
                 )
 
-                if (confirmed) onDelete(task.id)
+                if (confirmed) {
+                  try {
+                    await onDelete(task.id, task.updated_at)
+                  } catch (error) {
+                    onError(error.message)
+                  }
+                }
               }}
               aria-label={`Permanently delete ${task.name}`}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-100"
