@@ -59,3 +59,64 @@ html.dark {
   color-scheme: dark;
 }
 
+@media (max-height: 700px) {
+  .auth-page-main {
+    padding-block: 0.5rem;
+  }
+
+  .auth-page-header {
+    margin-bottom: 1rem;
+  }
+
+  .auth-page-mascot {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  .auth-page-card {
+    padding: 1rem;
+  }
+
+  .auth-page-intro {
+    margin-bottom: 0.75rem;
+  }
+
+  .auth-page-form {
+    gap: 0.75rem;
+  }
+
+  .auth-page-form > :not(:last-child) {
+    margin-block-end: 0.75rem;
+  }
+
+  .auth-page-form input {
+    padding-block: 0.625rem;
+  }
+
+  .auth-page-form button[type='submit'] {
+    padding-block: 0.75rem;
+  }
+
+  .auth-page-switch {
+    margin-top: 0.75rem;
+  }
+
+  .auth-page-note {
+    margin-top: 0.625rem;
+    line-height: 1.25;
+  }
+
+  .auth-page-footer {
+    padding-block: 0.25rem;
+  }
+}
+
+@media (max-height: 640px) {
+  .auth-page-main {
+    padding-block: 0.25rem;
+  }
+
+  .auth-page-footer {
+    display: none;
+  }
+}
