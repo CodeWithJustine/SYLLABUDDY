@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
@@ -245,6 +245,25 @@ function DashboardPage() {
     if (requestId === requestNumber.current) setTasks(nextTasks)
   }, [])
 
+  // Auto-mark overdue active tasks as missed
+  const autoMarkMissed = useCallback(async (currentTasks) => {
+    const now = new Date()
+    const overdue = currentTasks.filter(
+      (t) => t.status === 'active' && new Date(t.due_at) < now
+    )
+    if (overdue.length === 0) return
+    await Promise.allSettled(
+      overdue.map((t) =>
+        updateTask(t.id, { status: 'missed' }, t.updated_at).then((updated) => {
+          requestNumber.current += 1
+          setTasks((current) =>
+            current.map((task) => (task.id === updated.id ? updated : task))
+          )
+        })
+      )
+    )
+  }, [])
+
   useEffect(() => {
     let mounted = true
     const initialRequest = requestNumber.current
@@ -283,6 +302,16 @@ function DashboardPage() {
       unsubscribe()
     }
   }, [user.id])
+
+  // Sweep for overdue tasks on load and every minute
+  useEffect(() => {
+    if (loading) return
+    autoMarkMissed(tasks)
+    const interval = setInterval(() => {
+      setTasks((current) => { autoMarkMissed(current); return current })
+    }, 60_000)
+    return () => clearInterval(interval)
+  }, [loading, autoMarkMissed])
 
   const onSubmitTask = useCallback(async (taskData) => {
     if (taskSubmitInProgress.current) {
