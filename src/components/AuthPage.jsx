@@ -95,7 +95,7 @@ export default function AuthPage() {
 
         <section className="auth-page-content relative w-full max-w-md">
           <div className="auth-page-header mb-7 text-center">
-            <OwlMascot className="auth-page-mascot mx-auto h-10 w-10 shrink-0 drop-shadow-lg sm:h-[70px] sm:w-[70px]" />
+            {/* <OwlMascot className="auth-page-mascot mx-auto h-5 w-5 shrink-0 drop-shadow-lg sm:h-[70px] sm:w-[70px]" /> */}
             <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               Sylla<span className="text-blue-600">Buddy</span>
             </h1>

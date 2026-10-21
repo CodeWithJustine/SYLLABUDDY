@@ -147,8 +147,7 @@ export default function NotificationCenter({ userId, profile, updateProfile, onE
       {open && (
         <section
           aria-label="Notification center"
-          className="absolute right-0 z-40 mt-2 max-h-[75vh] w-[min(24rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl dark:border-slate-700 dark:bg-slate-900"
-        >
+          className="fixed inset-x-4 top-16 z-40 max-h-[75vh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl dark:border-slate-700 dark:bg-slate-900 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96"        >
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-bold">Notifications</h2>
             <button type="button" onClick={() => setOpen(false)} className="text-sm text-slate-500 hover:underline">
