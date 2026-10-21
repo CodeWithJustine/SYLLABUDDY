@@ -95,7 +95,7 @@ export default function PrivacyPolicy() {
                   after you choose to enable it and grant browser permission.
                   Push subscriptions are stored to deliver reminders to that
                   browser. Disable push in the notification menu or revoke
-                  permission in browser settings. Delivery depends on browser,
+                  permission in browser settings. Delivery depends on browser
                   device, and network support.
                 </p>
               </section>
