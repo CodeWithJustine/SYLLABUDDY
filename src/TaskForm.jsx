@@ -9,6 +9,7 @@ const initialForm = {
 }
 
 export default function TaskForm({ onAddTask, saving = false, timezone }) {
+  const [isOpen, setIsOpen] = useState(false)
   const [form, setForm] = useState(initialForm)
   const [error, setError] = useState('')
 
@@ -30,6 +31,7 @@ export default function TaskForm({ onAddTask, saving = false, timezone }) {
       .then(() => {
         setForm(initialForm)
         setError('')
+        setIsOpen(false) // Automatically close card after adding task
       })
       .catch((submitError) => {
         setError(submitError.message || 'Could not save this task.')
@@ -41,85 +43,132 @@ export default function TaskForm({ onAddTask, saving = false, timezone }) {
   const labelClass =
     'mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300'
 
+  // If closed, render only the toggle button
+  if (!isOpen) {
+    return (
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 active:scale-[0.98] dark:shadow-none sm:w-auto"
+      >
+        <span className="text-lg leading-none">+</span>
+        Add a new quest
+      </button>
+    )
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <label htmlFor="name" className={labelClass}>Task Name</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="e.g. Calculus Assignment"
-            maxLength={150}
-            required
-            className={fieldClass}
-          />
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Add a new quest</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Got a deadline? Put it on your radar.</p>
         </div>
-
-        <div>
-          <label htmlFor="subject" className={labelClass}>Course / Subject</label>
-          <input
-            id="subject"
-            name="subject"
-            type="text"
-            value={form.subject}
-            onChange={handleChange}
-            placeholder="e.g. Differential Equations"
-            maxLength={100}
-            required
-            className={fieldClass}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="dueDate" className={labelClass}>Due date and time</label>
-          <input
-            id="dueDate"
-            name="dueDate"
-            type="datetime-local"
-            value={form.dueDate}
-            min={formatDateTimeInput(new Date(), timezone)}
-            onChange={handleChange}
-            required
-            className={fieldClass}
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="description" className={labelClass}>
-          Description (optional)
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          maxLength={1000}
-          rows={3}
-          placeholder="Add useful task details"
-          className={`${fieldClass} resize-y`}
-        />
-      </div>
-
-      {error && <p role="alert" className="text-sm font-medium text-red-600">{error}</p>}
-
-      <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-slate-400">
-          New tasks will appear in Active Quests.
-        </p>
         <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 active:scale-[0.98] disabled:cursor-wait disabled:opacity-60"
+          type="button"
+          onClick={() => {
+            setIsOpen(false)
+            setError('')
+          }}
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
+          aria-label="Close task form"
         >
-          <span className="text-lg leading-none">+</span>
-          {saving ? 'Saving...' : 'Add Task'}
+          ✕
         </button>
       </div>
-    </form>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div>
+            <label htmlFor="name" className={labelClass}>Task Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="e.g. Calculus Assignment"
+              maxLength={150}
+              required
+              className={fieldClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="subject" className={labelClass}>Course / Subject</label>
+            <input
+              id="subject"
+              name="subject"
+              type="text"
+              value={form.subject}
+              onChange={handleChange}
+              placeholder="e.g. Differential Equations"
+              maxLength={100}
+              required
+              className={fieldClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="dueDate" className={labelClass}>Due date and time</label>
+            <input
+              id="dueDate"
+              name="dueDate"
+              type="datetime-local"
+              value={form.dueDate}
+              min={formatDateTimeInput(new Date(), timezone)}
+              onChange={handleChange}
+              required
+              className={fieldClass}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="description" className={labelClass}>
+            Description (optional)
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            maxLength={1000}
+            rows={3}
+            placeholder="Add useful task details"
+            className={`${fieldClass} resize-y`}
+          />
+        </div>
+
+        {error && <p role="alert" className="text-sm font-medium text-red-600">{error}</p>}
+
+        <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-slate-400">
+            New tasks will appear in Active Quests.
+          </p>
+          <div className="flex w-full items-center gap-2 sm:w-auto">
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => {
+                setIsOpen(false)
+                setError('')
+              }}
+              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 sm:w-auto"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 dark:shadow-none sm:w-auto"
+            >
+              <span className="text-lg leading-none">+</span>
+              {saving ? 'Saving...' : 'Add Task'}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   )
 }
